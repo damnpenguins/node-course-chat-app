@@ -15,14 +15,20 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-  socket.emit('newMessage' , {
-    from: 'mike@example.com',
-    text: 'Hey FCKR! - custom msg',
-    createdAt: 123
-  });
+  // socket.emit('newMessage' , {
+  //   from: 'mike@example.com',
+  //   text: 'Hey FCKR! - custom msg',
+  //   createdAt: 123
+  // });
 
   socket.on('createMessage', (newMSG) => {
     console.log('createMessage',newMSG);
+    // io emit broadcasts to all, socket emits to a single one
+    io.emit('newMessage', {
+      from: newMSG.from,
+      text: newMSG.text,
+      createdAt: new Date().getTime()
+    });
   });
 
 
