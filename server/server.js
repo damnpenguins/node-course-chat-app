@@ -9,7 +9,8 @@ const port        = process.env.PORT || 3000;
 var app     =  express();
 var server  = http.createServer(app);
 var io      = socketIO(server);
-
+// es6 destructuring
+const {generateMessage} = require('./utils/message');
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
@@ -21,27 +22,16 @@ io.on('connection', (socket) => {
   //   createdAt: 123
   // });
 
- socket.emit('newMessage',{
-    from: 'Admin',
-    text: 'Welcome to the chat app',
-    createdAt: new Date().getTime()
-   });
+  socket.emit('newMessage',generateMessage('Admin', 'Welcome to the Chat App'));
 
-  socket.broadcast.emit('newMessage',{
-      from: 'Admin',
-      text: 'new user joined',
-      createdAt: new Date().getTime()
-  });
+  socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user Joined'));
 
 
   socket.on('createMessage', (newMSG) => {
     console.log('createMessage',newMSG);
     // io emit broadcasts to all, socket emits to a single one
-    io.emit('newMessage', {
-      from: newMSG.from,
-      text: newMSG.text,
-      createdAt: new Date().getTime()
-    });
+    // io.emit('newMessage',generateMessage(newMSG.from, newMSG.text));
+    socket.broadcast.emit('newMessage',generateMessage(newMSG.from, newMSG.text));
 
 
 
