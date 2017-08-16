@@ -27,12 +27,12 @@ io.on('connection', (socket) => {
   socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user Joined'));
 
 
-  socket.on('createMessage', (newMSG) => {
+  socket.on('createMessage', (newMSG, callback) => {
     console.log('createMessage',newMSG);
     // io emit broadcasts to all, socket emits to a single one
     // io.emit('newMessage',generateMessage(newMSG.from, newMSG.text));
     socket.broadcast.emit('newMessage',generateMessage(newMSG.from, newMSG.text));
-
+    callback('This is from the server');
 
 
     // socket.broadcast.emit('newMessage',{
