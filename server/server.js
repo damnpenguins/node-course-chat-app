@@ -21,6 +21,19 @@ io.on('connection', (socket) => {
   //   createdAt: 123
   // });
 
+ socket.emit('newMessage',{
+    from: 'Admin',
+    text: 'Welcome to the chat app',
+    createdAt: new Date().getTime()
+   });
+
+  socket.broadcast.emit('newMessage',{
+      from: 'Admin',
+      text: 'new user joined',
+      createdAt: new Date().getTime()
+  });
+
+
   socket.on('createMessage', (newMSG) => {
     console.log('createMessage',newMSG);
     // io emit broadcasts to all, socket emits to a single one
@@ -29,6 +42,15 @@ io.on('connection', (socket) => {
       text: newMSG.text,
       createdAt: new Date().getTime()
     });
+
+
+
+    // socket.broadcast.emit('newMessage',{
+    //     from: newMSG.from,
+    //     text: newMSG.text,
+    //     createdAt: new Date().getTime()
+    // });
+
   });
 
 
