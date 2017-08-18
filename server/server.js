@@ -2,13 +2,14 @@ const http      = require('http');
 const path      = require('path');
 const express   = require('express');
 const socketIO  = require('socket.io');
+const moment    = require('moment');
 
-const publicPath  = path.join(__dirname,'../public');
-const port        = process.env.PORT || 3000;
+const publicPath    = path.join(__dirname,'../public');
+const port          = process.env.PORT || 3000;
 
-var app     =  express();
-var server  = http.createServer(app);
-var io      = socketIO(server);
+var app         =  express();
+var server      = http.createServer(app);
+var io          = socketIO(server);
 // es6 destructuring
 const {generateMessage,generateLocationMessage} = require('./utils/message');
 app.use(express.static(publicPath));
@@ -31,7 +32,8 @@ io.on('connection', (socket) => {
     console.log('createMessage',newMSG);
     // io emit broadcasts to all, socket emits to a single one
     // io.emit('newMessage',generateMessage(newMSG.from, newMSG.text));
-    socket.broadcast.emit('newMessage',generateMessage(newMSG.from, newMSG.text));
+    //socket.broadcast.emit('newMessage',generateMessage(newMSG.from,
+      io.emit('newMessage',generateMessage(newMSG.from, newMSG.text));
     callback('This is from the server');
 
 
