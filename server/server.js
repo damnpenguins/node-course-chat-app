@@ -12,6 +12,8 @@ var server      = http.createServer(app);
 var io          = socketIO(server);
 // es6 destructuring
 const {generateMessage,generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
@@ -23,9 +25,21 @@ io.on('connection', (socket) => {
   //   createdAt: 123
   // });
 
-  socket.emit('newMessage',generateMessage('Admin', 'Welcome to the Chat App'));
 
-  socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user Joined'));
+
+  socket.on('join', (params,callback) => {
+    if (!isRealString(params.name) || !isRealString(params.room)){
+      callback('name and room name are required');
+    }
+
+    socket.join(params.room);
+
+    socket.emit('newMessage',generateMessage('Admin', 'Welcome to the Chat App'));
+
+    socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin', `${params.name} joined the room.`));    
+
+    callback();
+  });
 
 
   socket.on('createMessage', (newMSG, callback) => {
